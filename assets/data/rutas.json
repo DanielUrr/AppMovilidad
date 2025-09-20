@@ -1,22 +1,170 @@
 {
   "Ruta 1": {
-    "paraderos": ["Centro", "Siete de Agosto", "Postobón", "La Esperanza"],
+    "color": "#FF6B6B",
+    "paraderos": [
+      {
+        "nombre": "Centro",
+        "lat": 4.1420,
+        "lng": -73.6266
+      },
+      {
+        "nombre": "Siete de Agosto", 
+        "lat": 4.1450,
+        "lng": -73.6280
+      },
+      {
+        "nombre": "Postobón",
+        "lat": 4.1380,
+        "lng": -73.6250
+      },
+      {
+        "nombre": "La Esperanza",
+        "lat": 4.1500,
+        "lng": -73.6300
+      }
+    ],
     "tarifa": 2500,
-    "horario": "5:00 AM - 10:00 PM"
+    "horario": "5:00 AM - 10:00 PM",
+    "frecuencia": "Cada 10 minutos"
   },
   "Ruta 2": {
-    "paraderos": ["Unillanos", "Catama", "Alborada", "Parque Banderas"],
+    "color": "#4ECDC4",
+    "paraderos": [
+      {
+        "nombre": "Unillanos",
+        "lat": 4.1350,
+        "lng": -73.6200
+      },
+      {
+        "nombre": "Catama",
+        "lat": 4.1400,
+        "lng": -73.6180
+      },
+      {
+        "nombre": "Alborada",
+        "lat": 4.1480,
+        "lng": -73.6220
+      },
+      {
+        "nombre": "Parque Banderas",
+        "lat": 4.1460,
+        "lng": -73.6240
+      }
+    ],
     "tarifa": 2500,
-    "horario": "6:00 AM - 9:30 PM"
+    "horario": "6:00 AM - 9:30 PM",
+    "frecuencia": "Cada 15 minutos"
   },
   "Ruta 3": {
-    "paraderos": ["Terminal", "Centro", "Hospital", "Macarena"],
+    "color": "#FFB347",
+    "paraderos": [
+      {
+        "nombre": "Terminal",
+        "lat": 4.1520,
+        "lng": -73.6320
+      },
+      {
+        "nombre": "Centro",
+        "lat": 4.1420,
+        "lng": -73.6266
+      },
+      {
+        "nombre": "Hospital",
+        "lat": 4.1390,
+        "lng": -73.6270
+      },
+      {
+        "nombre": "Macarena",
+        "lat": 4.1440,
+        "lng": -73.6290
+      }
+    ],
     "tarifa": 2500,
-    "horario": "5:30 AM - 10:30 PM"
+    "horario": "5:30 AM - 10:30 PM",
+    "frecuencia": "Cada 12 minutos"
   },
   "Ruta 4": {
-    "paraderos": ["Barzal", "Centro", "Unillanos", "Catama"],
+    "color": "#95E77E",
+    "paraderos": [
+      {
+        "nombre": "Barzal",
+        "lat": 4.1370,
+        "lng": -73.6210
+      },
+      {
+        "nombre": "Centro",
+        "lat": 4.1420,
+        "lng": -73.6266
+      },
+      {
+        "nombre": "Unillanos",
+        "lat": 4.1350,
+        "lng": -73.6200
+      },
+      {
+        "nombre": "Catama",
+        "lat": 4.1400,
+        "lng": -73.6180
+      }
+    ],
     "tarifa": 2500,
-    "horario": "6:00 AM - 9:00 PM"
+    "horario": "6:00 AM - 9:00 PM",
+    "frecuencia": "Cada 20 minutos"
+  },
+  "Ruta 5": {
+    "color": "#B19CD9",
+    "paraderos": [
+      {
+        "nombre": "Terminal",
+        "lat": 4.1520,
+        "lng": -73.6320
+      },
+      {
+        "nombre": "Siete de Agosto",
+        "lat": 4.1450,
+        "lng": -73.6280
+      },
+      {
+        "nombre": "Hospital",
+        "lat": 4.1390,
+        "lng": -73.6270
+      },
+      {
+        "nombre": "Unillanos",
+        "lat": 4.1350,
+        "lng": -73.6200
+      }
+    ],
+    "tarifa": 2500,
+    "horario": "5:45 AM - 10:00 PM",
+    "frecuencia": "Cada 18 minutos"
+  },
+  "Ruta 6": {
+    "color": "#FF69B4",
+    "paraderos": [
+      {
+        "nombre": "La Esperanza",
+        "lat": 4.1500,
+        "lng": -73.6300
+      },
+      {
+        "nombre": "Alborada",
+        "lat": 4.1480,
+        "lng": -73.6220
+      },
+      {
+        "nombre": "Catama",
+        "lat": 4.1400,
+        "lng": -73.6180
+      },
+      {
+        "nombre": "Barzal",
+        "lat": 4.1370,
+        "lng": -73.6210
+      }
+    ],
+    "tarifa": 2500,
+    "horario": "6:00 AM - 9:30 PM",
+    "frecuencia": "Cada 25 minutos"
   }
 }
