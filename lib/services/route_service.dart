@@ -30,15 +30,51 @@ class RouteService {
       List<LatLng> points = [];
       List<BusStop> stops = [];
 
+      // Usar waypoints si están disponibles para un trazado más suave
+      if (routeData['waypoints'] != null && routeData['waypoints'].isNotEmpty) {
+        // Usar waypoints para la línea de la ruta
+        for (var waypoint in routeData['waypoints']) {
+          points.add(LatLng(
+            waypoint['lat'].toDouble(),
+            waypoint['lng'].toDouble(),
+          ));
+        }
+      } else {
+        // Fallback: crear una ruta interpolada entre paraderos
+        final paraderos = routeData['paraderos'] as List;
+        for (int i = 0; i < paraderos.length - 1; i++) {
+          // Agregar el paradero actual
+          points.add(LatLng(
+            paraderos[i]['lat'].toDouble(),
+            paraderos[i]['lng'].toDouble(),
+          ));
+
+          // Interpolar puntos entre este paradero y el siguiente
+          List<LatLng> interpolated = _interpolatePoints(
+            LatLng(
+                paraderos[i]['lat'].toDouble(), paraderos[i]['lng'].toDouble()),
+            LatLng(paraderos[i + 1]['lat'].toDouble(),
+                paraderos[i + 1]['lng'].toDouble()),
+            10, // Número de puntos intermedios
+          );
+          points.addAll(interpolated);
+        }
+
+        // Agregar el último paradero
+        points.add(LatLng(
+          paraderos.last['lat'].toDouble(),
+          paraderos.last['lng'].toDouble(),
+        ));
+      }
+
+      // Agregar los paraderos como paradas
       for (var paradero in routeData['paraderos']) {
-        LatLng point = LatLng(
-          paradero['lat'].toDouble(),
-          paradero['lng'].toDouble(),
-        );
-        points.add(point);
         stops.add(BusStop(
           name: paradero['nombre'],
-          position: point,
+          position: LatLng(
+            paradero['lat'].toDouble(),
+            paradero['lng'].toDouble(),
+          ),
           routeName: routeName,
         ));
       }
@@ -55,6 +91,37 @@ class RouteService {
     });
 
     return routes;
+  }
+
+  // Interpolar puntos entre dos coordenadas para crear una ruta más suave
+  List<LatLng> _interpolatePoints(LatLng start, LatLng end, int numPoints) {
+    List<LatLng> interpolated = [];
+
+    // Agregar algo de curvatura para simular calles reales
+    double midLat = (start.latitude + end.latitude) / 2;
+    double midLng = (start.longitude + end.longitude) / 2;
+
+    // Crear una ligera curva agregando un desplazamiento perpendicular
+    double perpOffset = 0.001 * (Random().nextDouble() - 0.5);
+    double perpLat = midLat + perpOffset;
+    double perpLng = midLng - perpOffset;
+
+    for (int i = 1; i < numPoints; i++) {
+      double t = i / numPoints.toDouble();
+
+      // Usar interpolación cuadrática de Bézier para crear una curva suave
+      double lat = pow(1 - t, 2) * start.latitude +
+          2 * (1 - t) * t * perpLat +
+          pow(t, 2) * end.latitude;
+
+      double lng = pow(1 - t, 2) * start.longitude +
+          2 * (1 - t) * t * perpLng +
+          pow(t, 2) * end.longitude;
+
+      interpolated.add(LatLng(lat, lng));
+    }
+
+    return interpolated;
   }
 
   // Encontrar la ruta más cercana a una ubicación
@@ -133,6 +200,58 @@ class RouteService {
     return nearbyRoutes;
   }
 
+  // Calcular la mejor ruta entre dos puntos
+  Future<List<RouteInfo>> findBestRoute(
+      LatLng origin, LatLng destination) async {
+    List<RouteInfo> routes = await getAllRoutes();
+    List<RouteInfo> possibleRoutes = [];
+
+    for (var route in routes) {
+      bool hasOrigin = false;
+      bool hasDestination = false;
+
+      // Verificar si la ruta pasa cerca del origen y destino
+      for (var stop in route.stops) {
+        double distToOrigin = _calculateDistance(
+          origin.latitude,
+          origin.longitude,
+          stop.position.latitude,
+          stop.position.longitude,
+        );
+
+        double distToDestination = _calculateDistance(
+          destination.latitude,
+          destination.longitude,
+          stop.position.latitude,
+          stop.position.longitude,
+        );
+
+        if (distToOrigin < 500) hasOrigin = true; // 500 metros de tolerancia
+        if (distToDestination < 500) hasDestination = true;
+      }
+
+      if (hasOrigin && hasDestination) {
+        possibleRoutes.add(route);
+      }
+    }
+
+    // Ordenar por frecuencia (las más frecuentes primero)
+    possibleRoutes.sort((a, b) {
+      int freqA = _extractFrequency(a.frequency);
+      int freqB = _extractFrequency(b.frequency);
+      return freqA.compareTo(freqB);
+    });
+
+    return possibleRoutes;
+  }
+
+  // Extraer el número de minutos de la frecuencia
+  int _extractFrequency(String frequency) {
+    RegExp regex = RegExp(r'\d+');
+    Match? match = regex.firstMatch(frequency);
+    return match != null ? int.parse(match.group(0)!) : 999;
+  }
+
   // Calcular distancia entre dos puntos (Haversine formula)
   double _calculateDistance(
       double lat1, double lon1, double lat2, double lon2) {
@@ -174,15 +293,33 @@ class RouteService {
     List<LatLng> points = [];
     List<BusStop> stops = [];
 
+    // Usar waypoints si están disponibles
+    if (routeData['waypoints'] != null && routeData['waypoints'].isNotEmpty) {
+      for (var waypoint in routeData['waypoints']) {
+        points.add(LatLng(
+          waypoint['lat'].toDouble(),
+          waypoint['lng'].toDouble(),
+        ));
+      }
+    } else {
+      // Fallback a paraderos
+      for (var paradero in routeData['paraderos']) {
+        LatLng point = LatLng(
+          paradero['lat'].toDouble(),
+          paradero['lng'].toDouble(),
+        );
+        points.add(point);
+      }
+    }
+
+    // Agregar paraderos
     for (var paradero in routeData['paraderos']) {
-      LatLng point = LatLng(
-        paradero['lat'].toDouble(),
-        paradero['lng'].toDouble(),
-      );
-      points.add(point);
       stops.add(BusStop(
         name: paradero['nombre'],
-        position: point,
+        position: LatLng(
+          paradero['lat'].toDouble(),
+          paradero['lng'].toDouble(),
+        ),
         routeName: routeName,
       ));
     }
@@ -196,6 +333,50 @@ class RouteService {
       schedule: routeData['horario'],
       frequency: routeData['frecuencia'] ?? 'Cada 15 minutos',
     );
+  }
+
+  // Obtener estadísticas de las rutas
+  Future<Map<String, dynamic>> getRouteStatistics() async {
+    await loadRoutes();
+
+    int totalRoutes = _rutasData.length;
+    int totalStops = 0;
+    double avgFare = 0;
+
+    _rutasData.forEach((route, data) {
+      totalStops += (data['paraderos'] as List).length;
+      avgFare += data['tarifa'];
+    });
+
+    avgFare = avgFare / totalRoutes;
+
+    return {
+      'totalRoutes': totalRoutes,
+      'totalStops': totalStops,
+      'averageFare': avgFare,
+      'coverage': 'Ciudad completa',
+    };
+  }
+
+  // Buscar rutas por paradero
+  Future<List<String>> getRoutesByStop(String stopName) async {
+    await loadRoutes();
+    List<String> routesAtStop = [];
+
+    _rutasData.forEach((routeName, routeData) {
+      final paraderos = routeData['paraderos'] as List;
+      for (var paradero in paraderos) {
+        if (paradero['nombre']
+            .toString()
+            .toLowerCase()
+            .contains(stopName.toLowerCase())) {
+          routesAtStop.add(routeName);
+          break;
+        }
+      }
+    });
+
+    return routesAtStop;
   }
 }
 
