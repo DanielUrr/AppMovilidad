@@ -34,7 +34,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   Position? _currentPosition;
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isTrackingUser = false;
-  double _currentZoom = 14.0;
+  final double _currentZoom = 14.0;
 
   // Control de visibilidad
   bool _showAllRoutes = true;
@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   bool _showBusStops = true;
 
   // Simulación de buses en tiempo real
-  Map<String, LatLng> _busPositions = {};
+  final Map<String, LatLng> _busPositions = {};
   Timer? _busSimulationTimer;
 
   @override
@@ -860,7 +860,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   bottom: 20,
                   left: 10,
                   right: 10,
-                  child: Container(
+                  child: SizedBox(
                     height: 120,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

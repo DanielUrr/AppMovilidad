@@ -8,7 +8,7 @@ class ChatbotService {
 
   // Contexto de conversación para mantener memoria
   List<Map<String, String>> _conversationHistory = [];
-  Map<String, dynamic> _userContext = {};
+  final Map<String, dynamic> _userContext = {};
 
   Future<void> _loadRutasData() async {
     if (!_isLoaded) {
@@ -472,7 +472,7 @@ Las mejores sugerencias del mes reciben reconocimiento y pueden ganar premios co
 🌤️ **Clima y Transporte**
 
 **Pronóstico de hoy en Villavicencio:**
-• 🌡️ Temperatura: ${temp}°C
+• 🌡️ Temperatura: $temp°C
 • ${isRaining ? '🌧️ Lluvia esperada' : '☀️ Día soleado'}
 • 💨 Viento: 12 km/h
 

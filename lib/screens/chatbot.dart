@@ -12,12 +12,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final ChatbotService _chatbotService = ChatbotService();
-  List<Map<String, dynamic>> _messages = [];
+  final List<Map<String, dynamic>> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    _addBotMessage('¡Hola! Soy tu asistente de transporte. Pregúntame sobre rutas, tarifas u horarios.');
+    _addBotMessage(
+        '¡Hola! Soy tu asistente de transporte. Pregúntame sobre rutas, tarifas u horarios.');
   }
 
   void _addBotMessage(String message) {
@@ -63,7 +64,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
     // Simular tiempo de respuesta del bot
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final response = await _chatbotService.getResponse(message);
     _addBotMessage(response);
   }
@@ -141,7 +142,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[

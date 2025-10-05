@@ -4,7 +4,6 @@ import 'map.dart';
 import 'chatbot.dart';
 import 'tarjeta.dart';
 import 'rutas.dart';
-import 'bus_occupancy.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

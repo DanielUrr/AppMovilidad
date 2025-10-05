@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:convert';
-import 'package:flutter/services.dart';
 
 class BusOccupancyService {
   final Random _random = Random();

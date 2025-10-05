@@ -1,30 +1,50 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// test/widget_test.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:transporte_app/main.dart';
+import 'package:transporte_app/services/auth_service.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App initialization test', (WidgetTester tester) async {
+    // Crear instancia de AuthService para el test
+    final authService = AuthService();
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const TransporteApp());
+    await tester.pumpWidget(TransporteApp(authService: authService));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verificar que la pantalla de login se muestra (ya que no hay sesión activa)
+    expect(find.text('RUTAS ESCOLARES'), findsOneWidget);
+    expect(find.text('CELLANO'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Verificar que hay campos de email y password
+    expect(find.byType(TextFormField), findsNWidgets(2));
+
+    // Verificar que el botón de login existe
+    expect(find.text('INICIAR SESIÓN'), findsOneWidget);
+  });
+
+  testWidgets('Login screen shows test users button',
+      (WidgetTester tester) async {
+    final authService = AuthService();
+
+    await tester.pumpWidget(TransporteApp(authService: authService));
+
+    // Verificar que el botón de usuarios de prueba existe
+    expect(find.text('Ver usuarios de prueba'), findsOneWidget);
+  });
+
+  testWidgets('Login form validation works', (WidgetTester tester) async {
+    final authService = AuthService();
+
+    await tester.pumpWidget(TransporteApp(authService: authService));
+
+    // Intentar hacer login sin llenar los campos
+    await tester.tap(find.text('INICIAR SESIÓN'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verificar que aparecen mensajes de error
+    expect(find.text('Por favor ingresa tu correo'), findsOneWidget);
+    expect(find.text('Por favor ingresa tu contraseña'), findsOneWidget);
   });
 }

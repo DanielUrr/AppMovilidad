@@ -147,11 +147,11 @@ class _BusOccupancyScreenState extends State<BusOccupancyScreen>
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
-                      const Icon(Icons.circle, size: 8, color: Colors.white),
-                      const SizedBox(width: 4),
-                      const Text(
+                      Icon(Icons.circle, size: 8, color: Colors.white),
+                      SizedBox(width: 4),
+                      Text(
                         'EN VIVO',
                         style: TextStyle(
                           fontSize: 12,
@@ -856,7 +856,7 @@ class _BusOccupancyScreenState extends State<BusOccupancyScreen>
                   color: isOccupied ? Colors.red : Colors.green,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Center(
+                child: const Center(
                   child: Icon(
                     Icons.event_seat,
                     color: Colors.white,
