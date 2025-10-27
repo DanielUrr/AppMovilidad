@@ -262,7 +262,8 @@ class ChatbotService {
           final datos = _rutasData[ruta];
           respuesta += '🚌 **$ruta**\n';
           respuesta += '   • Tarifa: \$${datos['tarifa']}\n';
-          respuesta += '   • Frecuencia: ${datos['frecuencia']}\n\n';
+          respuesta +=
+              '   • Frecuencia: ${datos['frecuencia'] ?? 'Cada 15 minutos'}\n\n';
         }
         respuesta +=
             '💡 **Tip:** Revisa el mapa en tiempo real para ver la ubicación actual de los buses.';
@@ -802,7 +803,8 @@ Con el pase mensual ahorras hasta 40% si viajas todos los días.
     for (String rutaName in _rutasData.keys) {
       if (message.contains(rutaName.toLowerCase())) {
         final horario = _rutasData[rutaName]['horario'];
-        final frecuencia = _rutasData[rutaName]['frecuencia'];
+        final frecuencia =
+            _rutasData[rutaName]['frecuencia'] ?? 'Cada 15 minutos';
         return '''
 🕐 **Horarios - $rutaName**
 
@@ -837,7 +839,8 @@ Con el pase mensual ahorras hasta 40% si viajas todos los días.
     _rutasData.forEach((ruta, datos) {
       horariosCompletos += '\n🚌 **$ruta:**\n';
       horariosCompletos += '   • Horario: ${datos['horario']}\n';
-      horariosCompletos += '   • Frecuencia: ${datos['frecuencia']}\n';
+      horariosCompletos +=
+          '   • Frecuencia: ${datos['frecuencia'] ?? 'Cada 15 minutos'}\n';
     });
 
     horariosCompletos += '''
@@ -930,6 +933,48 @@ Con el pase mensual ahorras hasta 40% si viajas todos los días.
 
 ¿Buscas información de algún paradero específico?
 ''';
+  }
+
+  String _getRutaResponse(String message) {
+    // Buscar ruta específica en el mensaje
+    for (String rutaName in _rutasData.keys) {
+      if (message.contains(rutaName.toLowerCase())) {
+        final datos = _rutasData[rutaName];
+        final paraderos =
+            (datos['paraderos'] as List).map((p) => p['nombre']).join(' → ');
+
+        return '''
+🚌 **$rutaName**
+
+📍 **Recorrido:** $paraderos
+
+💰 **Tarifa:** \$${datos['tarifa']}
+
+🕐 **Horario:** ${datos['horario']}
+
+⏱️ **Frecuencia:** ${datos['frecuencia'] ?? 'Cada 15 minutos'}
+
+💡 **Tips para esta ruta:**
+• Menos concurrida entre 10am-12pm
+• Mayor frecuencia en horas pico
+• Buses con aire acondicionado disponibles
+
+¿Necesitas más información sobre esta ruta?
+''';
+      }
+    }
+
+    // Mostrar todas las rutas disponibles
+    if (_rutasData.isNotEmpty) {
+      String rutasInfo = '🚌 **Rutas disponibles:**\n\n';
+      _rutasData.forEach((ruta, datos) {
+        rutasInfo += '• $ruta - \$${datos['tarifa']} - ${datos['horario']}\n';
+      });
+      rutasInfo += '\n¿Te interesa información específica de alguna ruta?';
+      return rutasInfo;
+    }
+
+    return 'No tengo información de rutas cargada en este momento. 😔';
   }
 
   String _getIntelligentResponse(String message) {
